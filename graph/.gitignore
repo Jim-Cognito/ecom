@@ -1,0 +1,8 @@
+# .gitignore
+
+# npm packages
+node_modules/
+
+# Prisma-related files
+prisma/
+schema.prisma.lock
