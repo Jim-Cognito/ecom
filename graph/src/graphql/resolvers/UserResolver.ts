@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { Arg, Ctx, Mutation, Query, Resolver } from "type-graphql";
+import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from "type-graphql";
 import { RegisterInput } from "../schemas/inputs/RegisterInput";
 import { User } from "../schemas/User";
 import { LoginResponse } from "../schemas/response/LoginResponse";
@@ -63,27 +63,8 @@ export class UserResolver {
     }
 
     @Query(() => User, { nullable: true })
-    async whoAmI(@Ctx() { req }: Context) {
-        const authorization = req.headers["authorization"];
-        if (!authorization) {
-            return null;
-        }
-        try {
-            const token = authorization.split(" ")[1];
-            const { userId } = jwt.verify(
-                token,
-                process.env.ACCESS_TOKEN_SECRET!,
-            ) as {
-                userId: string;
-            };
-            return await prisma.user.findUnique({
-                where: {
-                    id: Number(userId),
-                },
-            });
-        } catch (err) {
-            console.log(err);
-            return null;
-        }
+    @Authorized()
+    async whoAmI(@Ctx() { user }: Context) {
+        return user;
     }
 }
