@@ -31,7 +31,6 @@ export class UserResolver {
                 expiresIn: "10d",
             },
         );
-        console.log(user);
         return {
             user,
             token,
