@@ -13,7 +13,7 @@ const prisma = new PrismaClient();
 
 @Resolver((of) => User)
 export class UserResolver {
-    @Mutation((returns) => User)
+    @Mutation((returns) => RegisterResponse)
     async register(
         @Arg("input") input: RegisterInput,
     ): Promise<RegisterResponse> {
