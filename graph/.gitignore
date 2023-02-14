@@ -2,5 +2,7 @@
 
 # npm packages
 node_modules/
-
 schema.prisma.lock
+/prisma/migrations
+.env
+package-lock.json
