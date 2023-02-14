@@ -28,12 +28,20 @@ export class UserResolver {
             { userId: user.id },
             process.env.ACCESS_TOKEN_SECRET!,
             {
-                expiresIn: "10d",
+                expiresIn: "3600s",
+            },
+        );
+        const refreshToken = jwt.sign(
+            { userId: user.id },
+            process.env.ACCESS_TOKEN_REFRESH!,
+            {
+                expiresIn: "30d",
             },
         );
         return {
             user,
             token,
+            refreshToken,
         };
     }
 
@@ -53,12 +61,20 @@ export class UserResolver {
             { userId: user.id },
             process.env.ACCESS_TOKEN_SECRET!,
             {
-                expiresIn: "10d",
+                expiresIn: "3600s",
+            },
+        );
+        const refreshToken = jwt.sign(
+            { userId: user.id },
+            process.env.ACCESS_TOKEN_REFRESH!,
+            {
+                expiresIn: "30d",
             },
         );
         return {
             user,
             token,
+            refreshToken,
         };
     }
 
@@ -66,5 +82,44 @@ export class UserResolver {
     @Authorized()
     async whoAmI(@Ctx() { user }: Context) {
         return user;
+    }
+
+    @Mutation(() => LoginResponse)
+    async refreshToken(
+        @Arg("refreshToken") refreshToken: string,
+    ): Promise<LoginResponse> {
+        try {
+            const decoded = jwt.verify(
+                refreshToken,
+                process.env.ACCESS_TOKEN_REFRESH!,
+            ) as { userId: string };
+
+            const user = await prisma.user.findUnique({
+                where: { id: Number(decoded.userId) },
+            });
+            if (!user) {
+                throw new Error("User not found");
+            }
+
+            const token = jwt.sign(
+                { userId: user.id },
+                process.env.ACCESS_TOKEN_SECRET!,
+                {
+                    expiresIn: "60s",
+                },
+            );
+
+            const newRefreshToken = jwt.sign(
+                { userId: user.id },
+                process.env.ACCESS_TOKEN_REFRESH!,
+                {
+                    expiresIn: "120s",
+                },
+            );
+
+            return { user, token, refreshToken: newRefreshToken };
+        } catch (error) {
+            throw new Error("Refresh token is invalid or expired");
+        }
     }
 }

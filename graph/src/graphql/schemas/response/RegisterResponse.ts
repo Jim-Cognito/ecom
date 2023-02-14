@@ -8,4 +8,7 @@ export class RegisterResponse {
 
     @Field(() => String)
     token: string;
+
+    @Field(() => String)
+    refreshToken: string;
 }
