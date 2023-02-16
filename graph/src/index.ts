@@ -5,12 +5,17 @@ import { ProductResolver } from "./graphql/resolvers/ProductResolver";
 import { buildSchema } from "type-graphql";
 import { UserResolver } from "./graphql/resolvers/UserResolver";
 import { authChecker } from "./graphql/auth/auth-checker";
+import { printSchema } from "graphql";
+import fs from "fs";
 
 async function main() {
     const schema = await buildSchema({
         resolvers: [ProductResolver, UserResolver],
         authChecker,
     });
+
+    const schemaSDL = printSchema(schema, { commentDescriptions: true });
+    fs.writeFileSync("../schema.gql", schemaSDL);
     const app = express();
 
     const server = new ApolloServer({
