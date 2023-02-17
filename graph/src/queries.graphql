@@ -1,0 +1,23 @@
+# this is an auto generated file. This will be overwritten
+query ListProducts($category: String) {
+  listProducts(category: $category) {
+    products {
+      id
+      name
+      description
+      price
+      category
+      qty
+      colour
+      imgUrl
+    }
+  }
+}
+query WhoAmI {
+  whoAmI {
+    id
+    firstName
+    lastName
+    email
+  }
+}
