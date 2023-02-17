@@ -15,7 +15,8 @@
         "type-graphql": "^1.1.1"
     },
     "scripts": {
-        "dev": "ts-node-dev src/index.ts"
+        "start": "ts-node-dev src/index.ts",
+        "dev": "./codegen.sh"
     },
     "prisma": {
         "seed": "ts-node prisma/seed.ts"

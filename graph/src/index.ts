@@ -15,11 +15,14 @@ async function main() {
     });
 
     const schemaSDL = printSchema(schema, { commentDescriptions: true });
-    fs.writeFileSync("../schema.gql", schemaSDL);
+    fs.writeFileSync("src/schema.graphql", schemaSDL);
+    const typeDefs = fs.readFileSync("src/schema.graphql", "utf8");
+
     const app = express();
 
     const server = new ApolloServer({
         schema,
+        typeDefs,
         context: ({ req, res }) => {
             return {
                 req,
@@ -37,9 +40,7 @@ async function main() {
     server.applyMiddleware({ app, path });
 
     app.listen({ port }, () =>
-        console.log(
-            `🚀 Server ready at http://localhost:4000${server.graphqlPath}`,
-        ),
+        console.log(`Server is listening on port ${port} 📞`),
     );
 }
 
