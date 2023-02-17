@@ -1,22 +1,22 @@
 set -e
-RED='\033[1;31m'
+RED='\033[0;31m'
 GREEN='\033[1;32m'
-BLUE='\034[1;44m'
-LIGHT_BLUE='\033[1;34m'
-PURPLE='\033[2;35m'
+BLUE='\033[0;36m'
+LIGHT_BLUE='\033[0;34m'
+PURPLE='\033[1;35m'
 
-NO_COLOR='\033[2m'
+NO_COLOR='\033[1m'
 
-echo "${LIGHT_BLUE}Generating Schema ⏳${NO_COLOR}"
+echo "${LIGHT_BLUE}Generating Schema ⏳"
 
 npm run start &
 
-sleep 10
+sleep 7
 
 
-echo "${GREEN}Done: Generating Schema ✅${NO_COLOR}"
+echo "${GREEN}Done: Generating Schema ✅"
 
-echo "${RED}Generating Queries and Mutations 🛠${NO_COLOR}"
+echo "${RED}Generating Queries and Mutations 🛠"
 
 npx amplify-graphql-docs-generator --schema src/schema.graphql --output src --language graphql --separateFiles true --maxDepth 6
 
@@ -25,23 +25,24 @@ rsync src/schema.graphql ../store/src/api/
 rsync src/queries.graphql ../store/src/api/
 rsync src/mutations.graphql ../store/src/api/
 
-echo "${GREEN}Done: Generating Queries and Mutations ✅${NO_COLOR}"
+echo "${GREEN}Done: Generating Queries and Mutations ✅"
 
 cd ..
 
-echo "${BLUE}Generating Types 📝${NO_COLOR}"
+echo "${BLUE}Generating Types 📝"
 
 cd store
 
-pwd
+npx graphql-codegen 32402 --trace-warnings ...
 
-npx graphql-codegen
-
-echo "${GREEN}Done: Generating Types ✅${NO_COLOR}"
+echo "${GREEN}Done: Generating Types ✅"
 
 cd ..
 
 cd graph
 
-echo "${PURPLE}Code generation completed. 🚀 Server ready at http://localhost:4000/graphql 🪐 Press Ctrl+C to exit.${NO_COLOR}"
+echo "${GREEN}Code generation completed ⭐️"
+
+echo "${PURPLE} 🚀 Apollo GraphQL Server ready at http://localhost:4000/graphql 🪐"
+
 tail -f /dev/null
