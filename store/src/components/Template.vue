@@ -1,5 +1,6 @@
 <template>
-    <h1>template</h1>
+    <h1>{{ msg }}</h1>
+    <button @click="count++">{{ count }}</button>
 </template>
 
 <script lang="ts">
