@@ -2,22 +2,22 @@
 query ListProducts($category: String) {
   listProducts(category: $category) {
     products {
-      id
-      name
-      description
-      price
       category
-      qty
       colour
+      description
+      id
       imgUrl
+      name
+      price
+      qty
     }
   }
 }
 query WhoAmI {
   whoAmI {
-    id
-    firstName
-    lastName
     email
+    firstName
+    id
+    lastName
   }
 }
