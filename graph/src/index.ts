@@ -5,17 +5,18 @@ import { ProductResolver } from "./graphql/resolvers/ProductResolver";
 import { buildSchema } from "type-graphql";
 import { UserResolver } from "./graphql/resolvers/UserResolver";
 import { authChecker } from "./graphql/auth/auth-checker";
-import { printSchema } from "graphql";
 import fs from "fs";
 
 async function main() {
     const schema = await buildSchema({
         resolvers: [ProductResolver, UserResolver],
         authChecker,
+        emitSchemaFile: {
+            path: __dirname + "/schema.graphql",
+            commentDescriptions: true,
+        },
     });
 
-    const schemaSDL = printSchema(schema, { commentDescriptions: true });
-    fs.writeFileSync("src/schema.graphql", schemaSDL);
     const typeDefs = fs.readFileSync("src/schema.graphql", "utf8");
 
     const app = express();
