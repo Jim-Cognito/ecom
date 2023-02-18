@@ -5,7 +5,6 @@ const prisma = new PrismaClient();
 
 export interface Context {
     req: {
-        userId: string;
         headers: {
             authorization: string;
         };
