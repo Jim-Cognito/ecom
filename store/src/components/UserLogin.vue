@@ -25,7 +25,7 @@
             <button v-else class="bg-black text-white h-9 mb-2 w-full">
                 Logging in...
             </button>
-            <GoogleLogin @response="handleResponse" />
+            <GoogleLogin />
             <ul v-if="errors" class="mt-2">
                 <li
                     class="text-xs text-red-500"
@@ -110,21 +110,11 @@ export default {
             console.log(error);
         });
 
-        const handleResponse = (e) => {
-            mutate({
-                input: {
-                    email: Date.now().toString(),
-                    password: e,
-                },
-            });
-        };
-
         return {
             input,
             login,
             loading,
             errors,
-            handleResponse,
         };
     },
 };

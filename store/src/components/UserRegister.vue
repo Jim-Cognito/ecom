@@ -31,13 +31,13 @@
             />
             <button
                 v-if="!loading"
-                @click="login"
+                @click="register"
                 class="bg-black text-white h-9 mb-2 w-full"
             >
-                Log In
+                Register
             </button>
             <button v-else class="bg-black text-white h-9 mb-2 w-full">
-                Logging in...
+                Loading...
             </button>
             <GoogleLogin />
             <ul v-if="errors" class="mt-2">
