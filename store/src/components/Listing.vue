@@ -1,5 +1,5 @@
 <template>
-    <select v-model="categoryFilter">
+    <select class="mt-16" v-model="categoryFilter">
         <option :value="null" selected disabled hidden>Choose category</option>
         <option v-for="category in categories" :key="category">
             {{ category }}
