@@ -9,6 +9,6 @@ export class LoginResponse {
     @Field(() => String)
     token: string;
 
-    @Field(() => String)
-    refreshToken: string;
+    // @Field(() => String)
+    // refreshToken: string;
 }
