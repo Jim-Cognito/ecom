@@ -1,4 +1,15 @@
 # this is an auto generated file. This will be overwritten
+mutation GoogleLogin($googleToken: String!) {
+  googleLogin(googleToken: $googleToken) {
+    token
+    user {
+      email
+      firstName
+      id
+      lastName
+    }
+  }
+}
 mutation Login($input: LoginInput!) {
   login(input: $input) {
     token

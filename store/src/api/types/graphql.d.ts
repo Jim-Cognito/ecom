@@ -2,7 +2,8 @@
 declare module '*/mutations.graphql' {
   import { DocumentNode } from 'graphql';
   const defaultDocument: DocumentNode;
-  export const Login: DocumentNode;
+  export const GoogleLogin: DocumentNode;
+export const Login: DocumentNode;
 export const Register: DocumentNode;
 
   export default defaultDocument;

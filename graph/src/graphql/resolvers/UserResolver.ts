@@ -5,7 +5,7 @@ import { User } from "../schemas/User";
 import { LoginResponse } from "../schemas/response/LoginResponse";
 import { LoginInput } from "../schemas/inputs/Login";
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
+import jwt, { JwtPayload } from "jsonwebtoken";
 import { RegisterResponse } from "../schemas/response/RegisterResponse";
 import { Context } from "../auth/auth-checker";
 
@@ -76,6 +76,64 @@ export class UserResolver {
             user,
             token,
             // refreshToken,
+        };
+    }
+
+    // declare an interface for the decoded google token
+
+    // a mutation that takes a google token and returns a login response
+    @Mutation(() => LoginResponse)
+    async googleLogin(
+        @Arg("googleToken") googleToken: string,
+    ): Promise<LoginResponse> {
+        // decode the token
+        const decoded = jwt.decode(googleToken) as JwtPayload;
+        // find the user in the database
+        const user = await prisma.user.findUnique({
+            where: { email: decoded.email },
+        });
+        // if user return login response
+        if (user) {
+            console.log("FOUND USER");
+            // generate a new token
+            const token = jwt.sign(
+                { userId: user.id },
+                process.env.ACCESS_TOKEN_SECRET!,
+                {
+                    expiresIn: "30s",
+                },
+            );
+            return {
+                user,
+                token,
+            };
+        }
+        console.log("CREATING NEW USER");
+        // if no user create a new user
+        const newUser = await prisma.user.create({
+            data: {
+                email: decoded.email,
+                firstName: decoded.given_name,
+                lastName: decoded.family_name,
+                // generate bcrypt hash for random password
+                password: await bcrypt.hash(
+                    Math.random().toString(36).slice(-8),
+                    12,
+                ),
+            },
+        });
+        // generate a new token
+        const token = jwt.sign(
+            { userId: newUser.id },
+            process.env.ACCESS_TOKEN_SECRET!,
+            {
+                expiresIn: "30s",
+            },
+        );
+        // return login response
+        return {
+            user: newUser,
+            token,
         };
     }
 

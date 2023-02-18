@@ -29,8 +29,14 @@ export type LoginResponse = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  googleLogin: LoginResponse;
   login: LoginResponse;
   register: RegisterResponse;
+};
+
+
+export type MutationGoogleLoginArgs = {
+  googleToken: Scalars['String'];
 };
 
 
@@ -92,6 +98,13 @@ export type User = {
   lastName: Scalars['String'];
 };
 
+export type GoogleLoginMutationVariables = Exact<{
+  googleToken: Scalars['String'];
+}>;
+
+
+export type GoogleLoginMutation = { __typename?: 'Mutation', googleLogin: { __typename?: 'LoginResponse', token: string, user: { __typename?: 'User', email: string, firstName: string, id: string, lastName: string } } };
+
 export type LoginMutationVariables = Exact<{
   input: LoginInput;
 }>;
@@ -119,6 +132,41 @@ export type WhoAmIQueryVariables = Exact<{ [key: string]: never; }>;
 export type WhoAmIQuery = { __typename?: 'Query', whoAmI?: { __typename?: 'User', email: string, firstName: string, id: string, lastName: string } | null };
 
 
+export const GoogleLoginDocument = gql`
+    mutation GoogleLogin($googleToken: String!) {
+  googleLogin(googleToken: $googleToken) {
+    token
+    user {
+      email
+      firstName
+      id
+      lastName
+    }
+  }
+}
+    `;
+
+/**
+ * __useGoogleLoginMutation__
+ *
+ * To run a mutation, you first call `useGoogleLoginMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useGoogleLoginMutation` returns an object that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
+ *
+ * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
+ *
+ * @example
+ * const { mutate, loading, error, onDone } = useGoogleLoginMutation({
+ *   variables: {
+ *     googleToken: // value for 'googleToken'
+ *   },
+ * });
+ */
+export function useGoogleLoginMutation(options: VueApolloComposable.UseMutationOptions<GoogleLoginMutation, GoogleLoginMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<GoogleLoginMutation, GoogleLoginMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<GoogleLoginMutation, GoogleLoginMutationVariables>(GoogleLoginDocument, options);
+}
+export type GoogleLoginMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<GoogleLoginMutation, GoogleLoginMutationVariables>;
 export const LoginDocument = gql`
     mutation Login($input: LoginInput!) {
   login(input: $input) {
