@@ -28,20 +28,20 @@ export class UserResolver {
             { userId: user.id },
             process.env.ACCESS_TOKEN_SECRET!,
             {
-                expiresIn: "3600s",
+                expiresIn: "30s",
             },
         );
-        const refreshToken = jwt.sign(
-            { userId: user.id },
-            process.env.ACCESS_TOKEN_REFRESH!,
-            {
-                expiresIn: "30d",
-            },
-        );
+        // const refreshToken = jwt.sign(
+        //     { userId: user.id },
+        //     process.env.ACCESS_TOKEN_REFRESH!,
+        //     {
+        //         expiresIn: "60s",
+        //     },
+        // );
         return {
             user,
             token,
-            refreshToken,
+            // refreshToken,
         };
     }
 
@@ -49,6 +49,7 @@ export class UserResolver {
     async login(
         @Arg("input") { email, password }: LoginInput,
     ): Promise<LoginResponse> {
+        console.log(jwt.decode(password));
         const user = await prisma.user.findUnique({ where: { email } });
         if (!user) {
             throw new Error("Incorrect email or password");
@@ -61,20 +62,20 @@ export class UserResolver {
             { userId: user.id },
             process.env.ACCESS_TOKEN_SECRET!,
             {
-                expiresIn: "3600s",
+                expiresIn: "30s",
             },
         );
-        const refreshToken = jwt.sign(
-            { userId: user.id },
-            process.env.ACCESS_TOKEN_REFRESH!,
-            {
-                expiresIn: "30d",
-            },
-        );
+        // const refreshToken = jwt.sign(
+        //     { userId: user.id },
+        //     process.env.ACCESS_TOKEN_REFRESH!,
+        //     {
+        //         expiresIn: "60s",
+        //     },
+        // );
         return {
             user,
             token,
-            refreshToken,
+            // refreshToken,
         };
     }
 
@@ -84,42 +85,42 @@ export class UserResolver {
         return user;
     }
 
-    @Mutation(() => LoginResponse)
-    async refreshToken(
-        @Arg("refreshToken") refreshToken: string,
-    ): Promise<LoginResponse> {
-        try {
-            const decoded = jwt.verify(
-                refreshToken,
-                process.env.ACCESS_TOKEN_REFRESH!,
-            ) as { userId: string };
+    // @Mutation(() => LoginResponse)
+    // async refreshToken(
+    //     @Arg("refreshToken") refreshToken: string,
+    // ): Promise<LoginResponse> {
+    //     try {
+    //         const decoded = jwt.verify(
+    //             refreshToken,
+    //             process.env.ACCESS_TOKEN_REFRESH!,
+    //         ) as { userId: string };
 
-            const user = await prisma.user.findUnique({
-                where: { id: Number(decoded.userId) },
-            });
-            if (!user) {
-                throw new Error("User not found");
-            }
+    //         const user = await prisma.user.findUnique({
+    //             where: { id: Number(decoded.userId) },
+    //         });
+    //         if (!user) {
+    //             throw new Error("User not found");
+    //         }
 
-            const token = jwt.sign(
-                { userId: user.id },
-                process.env.ACCESS_TOKEN_SECRET!,
-                {
-                    expiresIn: "60s",
-                },
-            );
+    //         const token = jwt.sign(
+    //             { userId: user.id },
+    //             process.env.ACCESS_TOKEN_SECRET!,
+    //             {
+    //                 expiresIn: "10s",
+    //             },
+    //         );
 
-            const newRefreshToken = jwt.sign(
-                { userId: user.id },
-                process.env.ACCESS_TOKEN_REFRESH!,
-                {
-                    expiresIn: "120s",
-                },
-            );
+    //         const newRefreshToken = jwt.sign(
+    //             { userId: user.id },
+    //             process.env.ACCESS_TOKEN_REFRESH!,
+    //             {
+    //                 expiresIn: "60s",
+    //             },
+    //         );
 
-            return { user, token, refreshToken: newRefreshToken };
-        } catch (error) {
-            throw new Error("Refresh token is invalid or expired");
-        }
-    }
+    //         return { user, token };
+    //     } catch (error) {
+    //         throw new Error("Refresh token is invalid or expired");
+    //     }
+    // }
 }
