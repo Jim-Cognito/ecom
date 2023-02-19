@@ -7,26 +7,6 @@ import { onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 import { useGoogleLoginMutation } from "../api/types/types";
-declare class google {
-    static accounts: {
-        id: {
-            initialize: (options: {
-                client_id: string;
-                callback: (response: { credential: string }) => void;
-            }) => void;
-            prompt: () => void;
-            renderButton: (
-                button: HTMLElement,
-                options: {
-                    theme: string;
-                    size: string;
-                    width: number;
-                    height: number;
-                },
-            ) => void;
-        };
-    };
-}
 export default {
     name: "GoogleLogin",
     setup() {
@@ -55,8 +35,8 @@ export default {
             google.accounts.id.renderButton(button!, {
                 theme: "outline",
                 size: "large",
-                width: 224,
-                height: 36,
+                width: "224",
+                type: "standard",
             });
         });
 
