@@ -7,6 +7,11 @@ import { LoginInput } from "../schemas/inputs/Login";
 import bcrypt from "bcryptjs";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { RegisterResponse } from "../schemas/response/RegisterResponse";
+import {
+    createAccessToken,
+    createRefreshToken,
+    sendRefreshToken,
+} from "../auth/refresh-token";
 import { Context } from "../auth/auth-checker";
 
 const prisma = new PrismaClient();
@@ -16,6 +21,7 @@ export class UserResolver {
     @Mutation((returns) => RegisterResponse)
     async register(
         @Arg("input") input: RegisterInput,
+        @Ctx() { res }: Context,
     ): Promise<RegisterResponse> {
         const hashedPassword = await bcrypt.hash(input.password, 12);
         const user = await prisma.user.create({
@@ -24,32 +30,19 @@ export class UserResolver {
                 password: hashedPassword,
             },
         });
-        const token = jwt.sign(
-            { userId: user.id },
-            process.env.ACCESS_TOKEN_SECRET!,
-            {
-                expiresIn: "30s",
-            },
-        );
-        // const refreshToken = jwt.sign(
-        //     { userId: user.id },
-        //     process.env.ACCESS_TOKEN_REFRESH!,
-        //     {
-        //         expiresIn: "60s",
-        //     },
-        // );
+        const token = createAccessToken(user.id);
+        sendRefreshToken(res, createRefreshToken(user.id));
         return {
             user,
             token,
-            // refreshToken,
         };
     }
 
     @Mutation(() => LoginResponse)
     async login(
         @Arg("input") { email, password }: LoginInput,
+        @Ctx() { res }: Context,
     ): Promise<LoginResponse> {
-        console.log(jwt.decode(password));
         const user = await prisma.user.findUnique({ where: { email } });
         if (!user) {
             throw new Error("Incorrect email or password");
@@ -58,33 +51,19 @@ export class UserResolver {
         if (!isPasswordValid) {
             throw new Error("Incorrect email or password");
         }
-        const token = jwt.sign(
-            { userId: user.id },
-            process.env.ACCESS_TOKEN_SECRET!,
-            {
-                expiresIn: "30s",
-            },
-        );
-        // const refreshToken = jwt.sign(
-        //     { userId: user.id },
-        //     process.env.ACCESS_TOKEN_REFRESH!,
-        //     {
-        //         expiresIn: "60s",
-        //     },
-        // );
+        const token = createAccessToken(user.id);
+        sendRefreshToken(res, createRefreshToken(user.id));
         return {
             user,
             token,
-            // refreshToken,
         };
     }
-
-    // declare an interface for the decoded google token
 
     // a mutation that takes a google token and returns a login response
     @Mutation(() => LoginResponse)
     async googleLogin(
         @Arg("googleToken") googleToken: string,
+        @Ctx() { res }: Context,
     ): Promise<LoginResponse> {
         // decode the token
         const decoded = jwt.decode(googleToken) as JwtPayload;
@@ -96,13 +75,8 @@ export class UserResolver {
         if (user) {
             console.log("FOUND USER");
             // generate a new token
-            const token = jwt.sign(
-                { userId: user.id },
-                process.env.ACCESS_TOKEN_SECRET!,
-                {
-                    expiresIn: "30s",
-                },
-            );
+            const token = createAccessToken(user.id);
+            sendRefreshToken(res, createRefreshToken(user.id));
             return {
                 user,
                 token,
@@ -123,13 +97,8 @@ export class UserResolver {
             },
         });
         // generate a new token
-        const token = jwt.sign(
-            { userId: newUser.id },
-            process.env.ACCESS_TOKEN_SECRET!,
-            {
-                expiresIn: "30s",
-            },
-        );
+        const token = createAccessToken(newUser.id);
+        sendRefreshToken(res, createRefreshToken(newUser.id));
         // return login response
         return {
             user: newUser,
@@ -139,46 +108,12 @@ export class UserResolver {
 
     @Query(() => User, { nullable: true })
     @Authorized()
-    async whoAmI(@Ctx() { user }: Context) {
-        return user;
+    async whoAmI(@Ctx() { userId }: Context) {
+        console.log(userId, "INWHOAMI");
+        return prisma.user.findUnique({
+            where: {
+                id: userId,
+            },
+        });
     }
-
-    // @Mutation(() => LoginResponse)
-    // async refreshToken(
-    //     @Arg("refreshToken") refreshToken: string,
-    // ): Promise<LoginResponse> {
-    //     try {
-    //         const decoded = jwt.verify(
-    //             refreshToken,
-    //             process.env.ACCESS_TOKEN_REFRESH!,
-    //         ) as { userId: string };
-
-    //         const user = await prisma.user.findUnique({
-    //             where: { id: Number(decoded.userId) },
-    //         });
-    //         if (!user) {
-    //             throw new Error("User not found");
-    //         }
-
-    //         const token = jwt.sign(
-    //             { userId: user.id },
-    //             process.env.ACCESS_TOKEN_SECRET!,
-    //             {
-    //                 expiresIn: "10s",
-    //             },
-    //         );
-
-    //         const newRefreshToken = jwt.sign(
-    //             { userId: user.id },
-    //             process.env.ACCESS_TOKEN_REFRESH!,
-    //             {
-    //                 expiresIn: "60s",
-    //             },
-    //         );
-
-    //         return { user, token };
-    //     } catch (error) {
-    //         throw new Error("Refresh token is invalid or expired");
-    //     }
-    // }
 }
