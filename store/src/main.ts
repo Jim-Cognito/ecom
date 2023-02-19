@@ -2,7 +2,6 @@ import { createApp } from "vue";
 import { ApolloClient, InMemoryCache } from "@apollo/client/core";
 import { DefaultApolloClient } from "@vue/apollo-composable";
 import { createUploadLink } from "apollo-upload-client";
-import { setContext } from "@apollo/client/link/context";
 import { WhoAmIDocument } from "./api/types/types";
 import App from "./App.vue";
 import store from "./store";
@@ -14,19 +13,8 @@ const httpLink = createUploadLink({
     uri: "http://localhost:4000/graphql",
 });
 
-const authLink = setContext((_, { headers }) => {
-    // get the token from local storage if it exists
-    const token = localStorage.getItem("token");
-    // return the headers to the context so httpLink can read them
-    return {
-        headers: {
-            ...headers,
-            authorization: token ? `Bearer ${token}` : "",
-        },
-    };
-});
 const apolloClient = new ApolloClient({
-    link: authLink.concat(httpLink),
+    link: httpLink,
     cache: new InMemoryCache(),
 });
 
