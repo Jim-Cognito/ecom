@@ -20,6 +20,7 @@
         "vuex": "^4.1.0"
     },
     "devDependencies": {
+        "@types/google.accounts": "^0.0.6",
         "@graphql-codegen/cli": "^2.2.0",
         "@graphql-codegen/client-preset": "^2.0.0",
         "@graphql-codegen/typescript": "^2.2.2",
