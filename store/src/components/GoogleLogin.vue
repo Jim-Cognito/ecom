@@ -20,8 +20,7 @@ export default {
         onMounted(() => {
             // initialize google login button
             google.accounts.id.initialize({
-                client_id:
-                    "419283728745-4qal7spd25j03u4spd83k40mmvr19h6e.apps.googleusercontent.com",
+                client_id: import.meta.env.VITE_GM_CLIENT_ID!,
                 callback: (response) => {
                     googleLogin({
                         googleToken: response.credential,
