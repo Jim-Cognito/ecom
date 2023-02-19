@@ -1,20 +1,14 @@
 import { AuthChecker } from "type-graphql";
-import jwt from "jsonwebtoken";
+import { verify } from "jsonwebtoken";
 import { PrismaClient } from "@prisma/client";
+import { Request, Response } from "express";
+
 const prisma = new PrismaClient();
 
 export interface Context {
-    req: {
-        headers: {
-            authorization: string;
-        };
-    };
-    user: {
-        id: number;
-        firstName: string;
-        lastName: string;
-        email: string;
-    };
+    req: Request;
+    res: Response;
+    userId: number;
 }
 
 export const authChecker: AuthChecker<Context> = async ({ context }) => {
@@ -23,16 +17,16 @@ export const authChecker: AuthChecker<Context> = async ({ context }) => {
         return false;
     }
     const token = authorization.split(" ")[1];
-    const { userId } = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET!) as {
+    const payload = verify(token, process.env.ACCESS_TOKEN_SECRET!) as {
         userId: string;
     };
     const user = await prisma.user.findUnique({
         where: {
-            id: Number(userId),
+            id: Number(payload.userId),
         },
     });
     if (user) {
-        context.user = user;
+        context.userId = user.id;
         return true;
     } else {
         return false;
