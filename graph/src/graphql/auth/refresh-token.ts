@@ -22,5 +22,9 @@ export const sendRefreshToken = (res: Response, token: string) => {
         sameSite: "none",
         path: "/",
         secure: true,
+        domain: "localhost",
+        // cookie valid for 1 hour
+        expires: new Date(Date.now() + 60 * 60 * 1000),
+        maxAge: 60 * 60 * 1000,
     });
 };
