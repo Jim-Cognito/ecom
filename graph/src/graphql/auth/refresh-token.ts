@@ -6,13 +6,13 @@ const prisma = new PrismaClient();
 
 export const createAccessToken = (userId: number) => {
     return sign({ userId }, process.env.ACCESS_TOKEN_SECRET!, {
-        expiresIn: "1m",
+        expiresIn: "15m",
     });
 };
 
 export const createRefreshToken = (userId: number) => {
     return sign({ userId }, process.env.ACCESS_TOKEN_REFRESH!, {
-        expiresIn: "2m",
+        expiresIn: "1h",
     });
 };
 
