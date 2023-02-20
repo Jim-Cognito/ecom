@@ -109,7 +109,6 @@ export class UserResolver {
     @Query(() => User, { nullable: true })
     @Authorized()
     async whoAmI(@Ctx() { userId }: Context) {
-        console.log(userId, "INWHOAMI");
         return prisma.user.findUnique({
             where: {
                 id: userId,
