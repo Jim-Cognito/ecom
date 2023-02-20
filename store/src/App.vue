@@ -8,7 +8,6 @@
 <script lang="ts">
 import { onMounted, ref } from "vue";
 import Nav from "./components/Nav.vue";
-import axios from "axios";
 export default {
     name: "App",
     components: { Nav },
@@ -22,7 +21,7 @@ export default {
             })
                 .then(async (x) => {
                     const data = await x;
-                    console.log(data);
+                    console.log(x);
                     loading.value = false;
                 })
                 .catch((err) => {
