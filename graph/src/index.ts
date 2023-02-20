@@ -37,7 +37,7 @@ async function main() {
     app.use(
         cors({
             // front end url
-            origin: true,
+            origin: "http://localhost:5173",
             credentials: true,
         }),
     );
@@ -67,9 +67,6 @@ async function main() {
         }
 
         sendRefreshToken(res, createRefreshToken(user.id));
-        res.header("Access-Control-Allow-Credentials", "true");
-        res.header("Access-Control-Allow-Origin", "http://localhost:5173");
-
         return res.send({ ok: true, accessToken: createAccessToken(userId) });
     });
 
