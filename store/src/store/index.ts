@@ -6,12 +6,15 @@ export default createStore({
         token: null,
     },
     mutations: {
-        setUser(state, { user, token }) {
+        setUser(state, user) {
             state.user = user;
+        },
+        setToken(state, token) {
             state.token = token;
         },
         clearUser(state) {
             state.user = null;
+            state.token = null;
         },
     },
 });

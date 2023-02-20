@@ -102,7 +102,8 @@ export default {
         };
 
         onDone((result) => {
-            store.commit("setUser", result.data!.login!);
+            store.commit("setUser", result.data!.login!.user);
+            store.commit("setToken", result.data!.login!.token);
             router.push("/");
         });
 

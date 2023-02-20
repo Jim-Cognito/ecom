@@ -129,7 +129,8 @@ export default {
         };
 
         onDone((result) => {
-            store.commit("setUser", result.data!.register!);
+            store.commit("setUser", result.data!.register!.user);
+            store.commit("setToken", result.data!.register!.token);
             router.push("/");
         });
 

@@ -44,7 +44,8 @@ export default {
         });
 
         onDone((result) => {
-            store.commit("setUser", result!.data!.googleLogin);
+            store.commit("setUser", result!.data!.googleLogin.user);
+            store.commit("setToken", result.data!.googleLogin!.token);
             router.push("/");
         });
     },
