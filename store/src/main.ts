@@ -6,11 +6,48 @@ import store from "./store";
 import router from "./router";
 import "./index.css";
 import { setContext } from "@apollo/client/link/context";
+import { TokenRefreshLink } from "apollo-link-token-refresh";
+import jwtDecode from "jwt-decode";
 
 // HTTP connection to the API
 export const httpLink = new HttpLink({
     uri: "http://localhost:4000/graphql",
     credentials: "include",
+});
+
+const refreshLink = new TokenRefreshLink({
+    accessTokenField: "accessToken",
+    isTokenValidOrUndefined: () => {
+        // return boolean
+        const token = store.state.token;
+        if (!token) {
+            return true;
+        }
+        try {
+            const { exp }: any = jwtDecode(token);
+            if (Date.now() >= exp * 1000) {
+                return false;
+            } else {
+                return true;
+            }
+        } catch {
+            return false;
+        }
+    },
+    fetchAccessToken: () => {
+        // fetch
+        return fetch("http://localhost:4000/refresh_token", {
+            method: "POST",
+            credentials: "include",
+        });
+    },
+    handleFetch: (accessToken: string) => {
+        // handle fetch
+        store.commit("setToken", accessToken);
+    },
+    handleError: (err: Error) => {
+        store.commit("clearUser");
+    },
 });
 
 const authLink = setContext((_, { headers }) => {
@@ -32,7 +69,7 @@ const authLink = setContext((_, { headers }) => {
 export const apolloClient = new ApolloClient({
     cache: new InMemoryCache(),
     credentials: "include",
-    link: authLink.concat(httpLink),
+    link: refreshLink.concat(authLink.concat(httpLink)),
 });
 
 const app = createApp(App)
