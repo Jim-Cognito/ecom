@@ -73,7 +73,6 @@ export class UserResolver {
         });
         // if user return login response
         if (user) {
-            console.log("FOUND USER");
             // generate a new token
             const token = createAccessToken(user.id);
             sendRefreshToken(res, createRefreshToken(user.id));
@@ -82,7 +81,6 @@ export class UserResolver {
                 token,
             };
         }
-        console.log("CREATING NEW USER");
         // if no user create a new user
         const newUser = await prisma.user.create({
             data: {
@@ -104,6 +102,12 @@ export class UserResolver {
             user: newUser,
             token,
         };
+    }
+
+    @Mutation(() => Boolean)
+    async logout(@Ctx() { res }: Context) {
+        sendRefreshToken(res, "");
+        return true;
     }
 
     @Query(() => User, { nullable: true })
