@@ -2,16 +2,9 @@
     <div>
         <p class="text-green-500">{{ user }}</p>
         <p class="text-red-500">{{ error }}</p>
-        <button
-            v-if="!loading"
-            @click="logout({})"
-            class="bg-black text-white h-9 mb-2 w-full"
-        >
-            Log Out
-        </button>
-        <button v-else class="bg-black text-white h-9 mb-2 w-full">
-            Logging out...
-        </button>
+        <Button :loading="loading" @click="logout">{{
+            loading ? "Loading..." : "Logout"
+        }}</Button>
     </div>
 </template>
 
@@ -20,9 +13,11 @@ import { ApolloError } from "@apollo/client/errors";
 import { ref, computed } from "vue";
 import { useWhoAmIQuery, useLogoutMutation } from "../api/types/types";
 import { useStore } from "vuex";
+import Button from "./base/Button.vue";
 
 export default {
     name: "AuthTest",
+    components: { Button },
     setup() {
         const store = useStore();
         const { result, loading, onError } = useWhoAmIQuery({
@@ -33,13 +28,10 @@ export default {
             error.value = e;
         });
         const user = computed(() => result.value?.whoAmI ?? null);
-
         const { mutate: logout, onDone } = useLogoutMutation();
-
         onDone(() => {
             store.commit("clearUser");
         });
-
         return {
             user,
             loading,

@@ -15,16 +15,9 @@
                 type="password"
                 class="border block mb-3 w-full"
             />
-            <button
-                v-if="!loading"
-                @click="login"
-                class="bg-black text-white h-9 mb-2 w-full"
-            >
-                Log In
-            </button>
-            <button v-else class="bg-black text-white h-9 mb-2 w-full">
-                Logging in...
-            </button>
+            <Button :loading="loading" @click="login">{{
+                loading ? "Logging In..." : "Login"
+            }}</Button>
             <GoogleLogin />
             <ul v-if="errors" class="mt-2">
                 <li
@@ -50,6 +43,7 @@ import Schema from "async-validator";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 import GoogleLogin from "./GoogleLogin.vue";
+import Button from "./base/Button.vue";
 
 interface Error {
     message: string;
@@ -60,6 +54,7 @@ export default {
     name: "UserLogin",
     components: {
         GoogleLogin,
+        Button,
     },
     setup(props) {
         const store = useStore();
