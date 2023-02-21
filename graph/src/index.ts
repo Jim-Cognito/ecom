@@ -5,18 +5,10 @@ import { ProductResolver } from "./graphql/resolvers/ProductResolver";
 import { buildSchema } from "type-graphql";
 import { UserResolver } from "./graphql/resolvers/UserResolver";
 import { authChecker } from "./graphql/auth/auth-checker";
-import {
-    createAccessToken,
-    createRefreshToken,
-    sendRefreshToken,
-} from "./graphql/auth/refresh-token";
+import { refreshToken } from "./graphql/auth/refresh-token";
 import fs from "fs";
 import cookieParser from "cookie-parser";
-import { verify } from "jsonwebtoken";
-import { PrismaClient } from "@prisma/client";
 import cors from "cors";
-
-const prisma = new PrismaClient();
 
 async function main() {
     const schema = await buildSchema({
@@ -34,41 +26,16 @@ async function main() {
 
     app.use(cookieParser());
 
+    app.use(express.json());
+
     app.use(
         cors({
-            // front end url
             origin: "http://localhost:5173",
             credentials: true,
         }),
     );
 
-    // refresh token endpoint that gets ttokenn from cookie and sets new token in cookie
-    app.post("/refresh_token", async (req, res) => {
-        console.log(req.cookies);
-        const token = req.cookies.jid;
-        if (!token) {
-            console.log("NO TOKEN");
-            return res.send({ ok: false, accessToken: null });
-        }
-        let payload: any = null;
-        try {
-            payload = verify(token, process.env.ACCESS_TOKEN_REFRESH!);
-        } catch (err) {
-            console.log("INVALID TOKEN");
-            console.log(err);
-            return res.send({ ok: false, accessToken: null });
-        }
-        const { userId } = payload as any;
-        const user = await prisma.user.findUnique({ where: { id: userId } });
-
-        if (!user) {
-            console.log("INVALID USER");
-            return res.send({ ok: false, accessToken: null });
-        }
-
-        sendRefreshToken(res, createRefreshToken(user.id));
-        return res.send({ ok: true, accessToken: createAccessToken(userId) });
-    });
+    app.post("/refresh_token", refreshToken);
 
     const server = new ApolloServer({
         schema,
