@@ -21,6 +21,9 @@ mutation Login($input: LoginInput!) {
     }
   }
 }
+mutation Logout {
+  logout
+}
 mutation Register($input: RegisterInput!) {
   register(input: $input) {
     token

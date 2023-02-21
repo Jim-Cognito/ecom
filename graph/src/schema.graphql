@@ -16,6 +16,7 @@ type LoginResponse {
 type Mutation {
   googleLogin(googleToken: String!): LoginResponse!
   login(input: LoginInput!): LoginResponse!
+  logout: Boolean!
   register(input: RegisterInput!): RegisterResponse!
 }
 
