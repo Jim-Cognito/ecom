@@ -6,26 +6,32 @@
     </div>
 </template>
 <script lang="ts">
-import { onMounted, ref } from "vue";
-import { useStore } from "vuex";
 import Nav from "./components/Nav.vue";
 import { apolloClient } from "./main";
 import { WhoAmIDocument } from "./api/types/types";
+import { onMounted, ref } from "vue";
+import { useStore } from "vuex";
 export default {
     name: "App",
     components: { Nav },
     setup() {
         const loading = ref<boolean>(true);
         const store = useStore();
+
         onMounted(() => {
+            refreshToken();
+        });
+
+        function refreshToken() {
             fetch("http://localhost:4000/refresh_token", {
                 method: "POST",
                 credentials: "include",
             })
-                .then((response) => response.json())
+                .then((res) => {
+                    return res.json();
+                })
                 .then((data) => {
                     store.commit("setToken", data.accessToken);
-                    //useWhoAmI query to get user data and set it in the store
                     apolloClient
                         .query({
                             query: WhoAmIDocument,
@@ -35,15 +41,17 @@ export default {
                             loading.value = false;
                         })
                         .catch((err) => {
-                            console.log(err);
+                            console.warn(err);
+                            store.commit("clearUser");
                             loading.value = false;
                         });
                 })
                 .catch((err) => {
-                    console.log(err);
+                    console.warn(err);
+                    store.commit("clearUser");
                     loading.value = false;
                 });
-        });
+        }
 
         return {
             loading,
