@@ -5,20 +5,37 @@ import { ProductResolver } from "./graphql/resolvers/ProductResolver";
 import { buildSchema } from "type-graphql";
 import { UserResolver } from "./graphql/resolvers/UserResolver";
 import { authChecker } from "./graphql/auth/auth-checker";
-import { printSchema } from "graphql";
+import { refreshToken } from "./graphql/auth/refresh-token";
 import fs from "fs";
+import cookieParser from "cookie-parser";
+import cors from "cors";
 
 async function main() {
     const schema = await buildSchema({
         resolvers: [ProductResolver, UserResolver],
         authChecker,
+        emitSchemaFile: {
+            path: __dirname + "/schema.graphql",
+            commentDescriptions: true,
+        },
     });
 
-    const schemaSDL = printSchema(schema, { commentDescriptions: true });
-    fs.writeFileSync("src/schema.graphql", schemaSDL);
     const typeDefs = fs.readFileSync("src/schema.graphql", "utf8");
 
     const app = express();
+
+    app.use(cookieParser());
+
+    app.use(express.json());
+
+    app.use(
+        cors({
+            origin: "http://localhost:5173",
+            credentials: true,
+        }),
+    );
+
+    app.post("/refresh_token", refreshToken);
 
     const server = new ApolloServer({
         schema,
@@ -37,7 +54,7 @@ async function main() {
 
     await server.start();
 
-    server.applyMiddleware({ app, path });
+    server.applyMiddleware({ app, path, cors: false });
 
     app.listen({ port }, () =>
         console.log(`Server is listening on port ${port} 📞`),

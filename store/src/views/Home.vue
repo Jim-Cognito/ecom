@@ -1,19 +1,19 @@
 <template>
-    <h1>Home</h1>
-    <div>
-        <div>
-            <router-link to="/register">register</router-link>
-        </div>
-        <div>
-            <router-link to="/login">login</router-link>
-        </div>
-        <div>
-            <router-link to="/products">products</router-link>
-        </div>
-    </div>
+    <p class="text-green-500">{{ user }}</p>
+    <div class="text-2xl text-center mt-36">Home</div>
 </template>
 <script lang="ts">
+import { computed } from "vue";
+import { useStore } from "vuex";
+
 export default {
     name: "Home",
+    setup() {
+        const store = useStore();
+        const user = computed(() => store.state.user);
+        return {
+            user,
+        };
+    },
 };
 </script>

@@ -1,37 +1,37 @@
 # this is an auto generated file. This will be overwritten
-mutation Register($input: RegisterInput!) {
-  register(input: $input) {
-    user {
-      id
-      firstName
-      lastName
-      email
-    }
+mutation GoogleLogin($googleToken: String!) {
+  googleLogin(googleToken: $googleToken) {
     token
-    refreshToken
+    user {
+      email
+      firstName
+      id
+      lastName
+    }
   }
 }
 mutation Login($input: LoginInput!) {
   login(input: $input) {
-    user {
-      id
-      firstName
-      lastName
-      email
-    }
     token
-    refreshToken
+    user {
+      email
+      firstName
+      id
+      lastName
+    }
   }
 }
-mutation RefreshToken($refreshToken: String!) {
-  refreshToken(refreshToken: $refreshToken) {
-    user {
-      id
-      firstName
-      lastName
-      email
-    }
+mutation Logout {
+  logout
+}
+mutation Register($input: RegisterInput!) {
+  register(input: $input) {
     token
-    refreshToken
+    user {
+      email
+      firstName
+      id
+      lastName
+    }
   }
 }

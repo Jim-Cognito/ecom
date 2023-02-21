@@ -23,26 +23,26 @@ export type LoginInput = {
 
 export type LoginResponse = {
   __typename?: 'LoginResponse';
-  refreshToken: Scalars['String'];
   token: Scalars['String'];
   user: User;
 };
 
 export type Mutation = {
   __typename?: 'Mutation';
+  googleLogin: LoginResponse;
   login: LoginResponse;
-  refreshToken: LoginResponse;
+  logout: Scalars['Boolean'];
   register: RegisterResponse;
+};
+
+
+export type MutationGoogleLoginArgs = {
+  googleToken: Scalars['String'];
 };
 
 
 export type MutationLoginArgs = {
   input: LoginInput;
-};
-
-
-export type MutationRefreshTokenArgs = {
-  refreshToken: Scalars['String'];
 };
 
 
@@ -87,7 +87,6 @@ export type RegisterInput = {
 
 export type RegisterResponse = {
   __typename?: 'RegisterResponse';
-  refreshToken: Scalars['String'];
   token: Scalars['String'];
   user: User;
 };
@@ -100,87 +99,90 @@ export type User = {
   lastName: Scalars['String'];
 };
 
-export type RegisterMutationVariables = Exact<{
-  input: RegisterInput;
+export type GoogleLoginMutationVariables = Exact<{
+  googleToken: Scalars['String'];
 }>;
 
 
-export type RegisterMutation = { __typename?: 'Mutation', register: { __typename?: 'RegisterResponse', token: string, refreshToken: string, user: { __typename?: 'User', id: string, firstName: string, lastName: string, email: string } } };
+export type GoogleLoginMutation = { __typename?: 'Mutation', googleLogin: { __typename?: 'LoginResponse', token: string, user: { __typename?: 'User', email: string, firstName: string, id: string, lastName: string } } };
 
 export type LoginMutationVariables = Exact<{
   input: LoginInput;
 }>;
 
 
-export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'LoginResponse', token: string, refreshToken: string, user: { __typename?: 'User', id: string, firstName: string, lastName: string, email: string } } };
+export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'LoginResponse', token: string, user: { __typename?: 'User', email: string, firstName: string, id: string, lastName: string } } };
 
-export type RefreshTokenMutationVariables = Exact<{
-  refreshToken: Scalars['String'];
+export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type LogoutMutation = { __typename?: 'Mutation', logout: boolean };
+
+export type RegisterMutationVariables = Exact<{
+  input: RegisterInput;
 }>;
 
 
-export type RefreshTokenMutation = { __typename?: 'Mutation', refreshToken: { __typename?: 'LoginResponse', token: string, refreshToken: string, user: { __typename?: 'User', id: string, firstName: string, lastName: string, email: string } } };
+export type RegisterMutation = { __typename?: 'Mutation', register: { __typename?: 'RegisterResponse', token: string, user: { __typename?: 'User', email: string, firstName: string, id: string, lastName: string } } };
 
 export type ListProductsQueryVariables = Exact<{
   category?: InputMaybe<Scalars['String']>;
 }>;
 
 
-export type ListProductsQuery = { __typename?: 'Query', listProducts: { __typename?: 'ProductResponse', products: Array<{ __typename?: 'Product', id: string, name: string, description: string, price: number, category: string, qty: number, colour?: string | null, imgUrl?: string | null }> } };
+export type ListProductsQuery = { __typename?: 'Query', listProducts: { __typename?: 'ProductResponse', products: Array<{ __typename?: 'Product', category: string, colour?: string | null, description: string, id: string, imgUrl?: string | null, name: string, price: number, qty: number }> } };
 
 export type WhoAmIQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type WhoAmIQuery = { __typename?: 'Query', whoAmI?: { __typename?: 'User', id: string, firstName: string, lastName: string, email: string } | null };
+export type WhoAmIQuery = { __typename?: 'Query', whoAmI?: { __typename?: 'User', email: string, firstName: string, id: string, lastName: string } | null };
 
 
-export const RegisterDocument = gql`
-    mutation Register($input: RegisterInput!) {
-  register(input: $input) {
-    user {
-      id
-      firstName
-      lastName
-      email
-    }
+export const GoogleLoginDocument = gql`
+    mutation GoogleLogin($googleToken: String!) {
+  googleLogin(googleToken: $googleToken) {
     token
-    refreshToken
+    user {
+      email
+      firstName
+      id
+      lastName
+    }
   }
 }
     `;
 
 /**
- * __useRegisterMutation__
+ * __useGoogleLoginMutation__
  *
- * To run a mutation, you first call `useRegisterMutation` within a Vue component and pass it any options that fit your needs.
- * When your component renders, `useRegisterMutation` returns an object that includes:
+ * To run a mutation, you first call `useGoogleLoginMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useGoogleLoginMutation` returns an object that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
  *
  * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
  *
  * @example
- * const { mutate, loading, error, onDone } = useRegisterMutation({
+ * const { mutate, loading, error, onDone } = useGoogleLoginMutation({
  *   variables: {
- *     input: // value for 'input'
+ *     googleToken: // value for 'googleToken'
  *   },
  * });
  */
-export function useRegisterMutation(options: VueApolloComposable.UseMutationOptions<RegisterMutation, RegisterMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<RegisterMutation, RegisterMutationVariables>> = {}) {
-  return VueApolloComposable.useMutation<RegisterMutation, RegisterMutationVariables>(RegisterDocument, options);
+export function useGoogleLoginMutation(options: VueApolloComposable.UseMutationOptions<GoogleLoginMutation, GoogleLoginMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<GoogleLoginMutation, GoogleLoginMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<GoogleLoginMutation, GoogleLoginMutationVariables>(GoogleLoginDocument, options);
 }
-export type RegisterMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<RegisterMutation, RegisterMutationVariables>;
+export type GoogleLoginMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<GoogleLoginMutation, GoogleLoginMutationVariables>;
 export const LoginDocument = gql`
     mutation Login($input: LoginInput!) {
   login(input: $input) {
-    user {
-      id
-      firstName
-      lastName
-      email
-    }
     token
-    refreshToken
+    user {
+      email
+      firstName
+      id
+      lastName
+    }
   }
 }
     `;
@@ -206,54 +208,76 @@ export function useLoginMutation(options: VueApolloComposable.UseMutationOptions
   return VueApolloComposable.useMutation<LoginMutation, LoginMutationVariables>(LoginDocument, options);
 }
 export type LoginMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<LoginMutation, LoginMutationVariables>;
-export const RefreshTokenDocument = gql`
-    mutation RefreshToken($refreshToken: String!) {
-  refreshToken(refreshToken: $refreshToken) {
-    user {
-      id
-      firstName
-      lastName
-      email
-    }
-    token
-    refreshToken
-  }
+export const LogoutDocument = gql`
+    mutation Logout {
+  logout
 }
     `;
 
 /**
- * __useRefreshTokenMutation__
+ * __useLogoutMutation__
  *
- * To run a mutation, you first call `useRefreshTokenMutation` within a Vue component and pass it any options that fit your needs.
- * When your component renders, `useRefreshTokenMutation` returns an object that includes:
+ * To run a mutation, you first call `useLogoutMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useLogoutMutation` returns an object that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
  *
  * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
  *
  * @example
- * const { mutate, loading, error, onDone } = useRefreshTokenMutation({
+ * const { mutate, loading, error, onDone } = useLogoutMutation();
+ */
+export function useLogoutMutation(options: VueApolloComposable.UseMutationOptions<LogoutMutation, LogoutMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<LogoutMutation, LogoutMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<LogoutMutation, LogoutMutationVariables>(LogoutDocument, options);
+}
+export type LogoutMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<LogoutMutation, LogoutMutationVariables>;
+export const RegisterDocument = gql`
+    mutation Register($input: RegisterInput!) {
+  register(input: $input) {
+    token
+    user {
+      email
+      firstName
+      id
+      lastName
+    }
+  }
+}
+    `;
+
+/**
+ * __useRegisterMutation__
+ *
+ * To run a mutation, you first call `useRegisterMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useRegisterMutation` returns an object that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
+ *
+ * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
+ *
+ * @example
+ * const { mutate, loading, error, onDone } = useRegisterMutation({
  *   variables: {
- *     refreshToken: // value for 'refreshToken'
+ *     input: // value for 'input'
  *   },
  * });
  */
-export function useRefreshTokenMutation(options: VueApolloComposable.UseMutationOptions<RefreshTokenMutation, RefreshTokenMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<RefreshTokenMutation, RefreshTokenMutationVariables>> = {}) {
-  return VueApolloComposable.useMutation<RefreshTokenMutation, RefreshTokenMutationVariables>(RefreshTokenDocument, options);
+export function useRegisterMutation(options: VueApolloComposable.UseMutationOptions<RegisterMutation, RegisterMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<RegisterMutation, RegisterMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<RegisterMutation, RegisterMutationVariables>(RegisterDocument, options);
 }
-export type RefreshTokenMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<RefreshTokenMutation, RefreshTokenMutationVariables>;
+export type RegisterMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<RegisterMutation, RegisterMutationVariables>;
 export const ListProductsDocument = gql`
     query ListProducts($category: String) {
   listProducts(category: $category) {
     products {
-      id
-      name
-      description
-      price
       category
-      qty
       colour
+      description
+      id
       imgUrl
+      name
+      price
+      qty
     }
   }
 }
@@ -284,10 +308,10 @@ export type ListProductsQueryCompositionFunctionResult = VueApolloComposable.Use
 export const WhoAmIDocument = gql`
     query WhoAmI {
   whoAmI {
-    id
-    firstName
-    lastName
     email
+    firstName
+    id
+    lastName
   }
 }
     `;

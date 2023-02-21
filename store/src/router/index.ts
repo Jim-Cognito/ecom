@@ -3,6 +3,7 @@ import Home from "../views/Home.vue";
 import Login from "../views/Login.vue";
 import Register from "../views/Register.vue";
 import Listing from "../components/Listing.vue";
+import AuthTest from "../components/AuthTest.vue";
 const routes = [
     // Define your routes here
     {
@@ -24,6 +25,11 @@ const routes = [
         path: "/products",
         name: "Products",
         component: Listing,
+    },
+    {
+        path: "/auth",
+        name: "AuthTest",
+        component: AuthTest,
     },
 ];
 
