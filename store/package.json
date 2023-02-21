@@ -9,9 +9,11 @@
     },
     "dependencies": {
         "@vue/apollo-composable": "^4.0.0-beta.2",
+        "apollo-link-token-refresh": "^0.4.0",
         "async-validator": "^4.2.5",
         "graphql": "^15.8.0",
         "graphql-tag": "^2.12.6",
+        "jwt-decode": "^3.1.2",
         "vue": "^3.2.45",
         "vue-router": "^4.1.6",
         "vuex": "^4.1.0"
@@ -24,6 +26,7 @@
         "@graphql-codegen/typescript-operations": "^2.1.6",
         "@graphql-codegen/typescript-vue-apollo": "^3.1.4",
         "@types/google.accounts": "^0.0.6",
+        "@types/jwt-decode": "^3.1.0",
         "@vitejs/plugin-vue": "^4.0.0",
         "autoprefixer": "^10.4.13",
         "postcss": "^8.4.21",
