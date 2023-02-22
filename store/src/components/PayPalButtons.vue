@@ -1,5 +1,5 @@
 <template>
-    <div class="absolute" v-if="loading">Loading PayPal...</div>
+    <div class="absolute mt-16" v-if="loading">Loading PayPal...</div>
     <div id="paypal-buttons" class="w-56"></div>
 </template>
 

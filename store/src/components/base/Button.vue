@@ -1,6 +1,6 @@
 <template>
     <button
-        class="bg-black text-white h-9 mb-2 w-full"
+        class="bg-black text-white h-9 mb-2 w-full font-sans"
         @click="!loading ? $emit('click') : ''"
     >
         <slot />
@@ -9,7 +9,7 @@
 
 <script lang="ts">
 export default {
-    name: "Template",
+    name: "Button",
     props: {
         loading: {
             type: Boolean,

@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="font-serif">
         <p class="text-green-500">{{ user }}</p>
         <p class="text-red-500">{{ error }}</p>
         <Button :loading="loading" @click="logout">{{
