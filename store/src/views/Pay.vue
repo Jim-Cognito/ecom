@@ -1,5 +1,6 @@
 <template>
     <div class="flex flex-col items-center mt-36">
+        <h1 class="mb-6 text-2xl font-serif">Pay</h1>
         <PayPalButtons />
     </div>
 </template>

@@ -1,6 +1,6 @@
 <template>
     <div class="flex flex-col items-center mt-36">
-        <h1 class="mb-6 text-2xl">Log In</h1>
+        <h1 class="mb-6 text-2xl font-serif">Log In</h1>
         <UserLogin />
     </div>
 </template>

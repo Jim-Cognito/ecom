@@ -1,5 +1,5 @@
 <template>
-    <div class="flex space-x-5">
+    <div class="flex space-x-5 font-serif">
         <router-link class="block" to="/">Home</router-link>
         <router-link class="block" to="/login">Log In</router-link>
         <router-link class="block" to="/register">Register</router-link>

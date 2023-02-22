@@ -5,22 +5,20 @@
             {{ category }}
         </option>
     </select>
-    <p @click="categoryFilter = null">Clear</p>
+    <p @click="categoryFilter = null" class="inline">Clear</p>
     <div v-if="loading">Loading...</div>
-    <div style="display: flex; flex-wrap: wrap" v-else>
+    <div class="flex flex-wrap justify-around px-6 py-3" v-else>
         <div
-            style="
-                color: blue;
-                text-align: center;
-                border: solid black 1px;
-                width: 360px;
-            "
+            class="border shadow w-48 h-72 mb-3 flex px-3 py-2 hover:shadow-lg font-serif"
             v-for="(product, index) in products"
             :key="index"
         >
-            <p>{{ product.name }}</p>
-            <p>{{ product.description }}</p>
-            <p>{{ product.price }}</p>
+            <div class="self-end">
+                <p>{{ product.name }}</p>
+                <p>{{ product.description }}</p>
+                <p>{{ product.price }}</p>
+                <Button>Add To Cart</Button>
+            </div>
         </div>
     </div>
 </template>
@@ -28,9 +26,11 @@
 <script lang="ts">
 import { useListProductsQuery } from "../api/types/types";
 import { computed, ref } from "vue";
+import Button from "./base/Button.vue";
 
 export default {
     name: "Listing",
+    components: { Button },
     setup() {
         const categories = ["Glitter", "Foils", "Sequins", "Stickers", "Tools"];
         const categoryFilter = ref<string | null>(null);

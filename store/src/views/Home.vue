@@ -1,6 +1,6 @@
 <template>
     <p class="text-green-500">{{ user }}</p>
-    <div class="text-2xl text-center mt-36">Home</div>
+    <div class="text-2xl text-center mt-36 font-serif">Home</div>
 </template>
 <script lang="ts">
 import { computed } from "vue";
