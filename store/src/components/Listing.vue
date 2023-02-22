@@ -17,6 +17,7 @@
                 <p>{{ product.name }}</p>
                 <p>{{ product.description }}</p>
                 <p>{{ product.price }}</p>
+                <Button>Add To Cart</Button>
             </div>
         </div>
     </div>
@@ -25,9 +26,11 @@
 <script lang="ts">
 import { useListProductsQuery } from "../api/types/types";
 import { computed, ref } from "vue";
+import Button from "./base/Button.vue";
 
 export default {
     name: "Listing",
+    components: { Button },
     setup() {
         const categories = ["Glitter", "Foils", "Sequins", "Stickers", "Tools"];
         const categoryFilter = ref<string | null>(null);

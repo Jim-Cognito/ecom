@@ -1,6 +1,6 @@
 <template>
     <button
-        class="bg-black text-white h-9 mb-2 w-full font-sans"
+        class="bg-black text-white h-9 mb-2 w-full font-sans hover:bg-gray-800"
         @click="!loading ? $emit('click') : ''"
     >
         <slot />
