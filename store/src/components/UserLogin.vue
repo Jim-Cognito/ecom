@@ -1,8 +1,8 @@
 <template>
     <div class="border w-96 flex justify-center bg-white pt-3 py-6 font-serif">
         <div class="flex flex-col items-center w-56">
-            <Input name="Email" type="email" />
-            <Input name="Password" type="password" />
+            <Input v-model="input.email" name="Email" type="email" />
+            <Input v-model="input.password" name="Password" type="password" />
             <Button :loading="loading" @click="login">{{
                 loading ? "Logging In..." : "Login"
             }}</Button>
