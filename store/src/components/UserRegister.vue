@@ -1,34 +1,10 @@
 <template>
-    <div class="border w-96 flex justify-center bg-white pt-3 py-6">
+    <div class="border w-96 flex justify-center bg-white pt-3 py-6 font-serif">
         <div class="flex flex-col items-center w-56">
-            <label for="first-name" class="self-start block">First Name</label>
-            <input
-                v-model="input.firstName"
-                name="first-name"
-                type="text"
-                class="border block mb-3 w-full"
-            />
-            <label for="last-name" class="self-start block">Last Name</label>
-            <input
-                v-model="input.lastName"
-                name="last-name"
-                type="text"
-                class="border block mb-3 w-full"
-            />
-            <label for="email" class="self-start block">Email</label>
-            <input
-                v-model="input.email"
-                name="email"
-                type="email"
-                class="border block mb-3 w-full"
-            />
-            <label for="password" class="self-start block">Password</label>
-            <input
-                v-model="input.password"
-                name="password"
-                type="password"
-                class="border block mb-3 w-full"
-            />
+            <Input name="First Name" type="text" />
+            <Input name="Last Name" type="text" />
+            <Input name="Email" type="email" />
+            <Input name="Password" type="password" />
             <Button :loading="loading" @click="register">{{
                 loading ? "Loading..." : "Register"
             }}</Button>
@@ -60,6 +36,7 @@ import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 import GoogleLogin from "./GoogleLogin.vue";
 import Button from "./base/Button.vue";
+import Input from "./base/Input.vue";
 interface Error {
     message: string;
     fieldValue: string;
@@ -70,6 +47,7 @@ export default {
     components: {
         GoogleLogin,
         Button,
+        Input,
     },
     setup(props) {
         const store = useStore();
